@@ -1,0 +1,35 @@
+                    Fast Cashier System
+
+┌──────────────────────────────────────────────┐
+│                 User Interface               │
+│                                              │
+│   Manager UI    Cashier UI    Kitchen UI     │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│              Application Layer               │
+│                                              │
+│ Authentication │ Products │ Sales │ Invoices │
+│ Cashiers       │ Reports  │ Stock │ Payments │
+│ Voice / Search │ Devices                     │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│                 Data Layer                   │
+│                                              │
+│             Local Database                   │
+│                                              │
+│ Products │ Users │ Orders │ Invoices         │
+│ Payments │ Inventory │ Activity Logs         │
+└──────────────────────┬───────────────────────┘
+                       │
+              ┌────────┴─────────┐
+              ▼                  ▼
+┌───────────────────┐    ┌─────────────────────┐
+│ Hardware Devices  │    │ External Services   │
+│                   │    │                     │
+│ Receipt Printer   │    │ Payment Device      │
+│ Kitchen Printer   │    │ Excel Import/Export │
+└───────────────────┘    └─────────────────────┘

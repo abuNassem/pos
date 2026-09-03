@@ -1,0 +1,245 @@
+Fast Cashier System
+1. Project Overview
+1.1 Project Name
+
+Fast Cashier
+
+1.2 System Description
+
+Fast Cashier is a software system designed to simplify and improve the checkout and sales process in commercial stores, restaurants, and retail businesses.
+
+The system provides an integrated solution for managing products, invoices, cashiers, connected devices, payments, and sales reports. It aims to increase transaction speed, reduce customer waiting time, and improve the overall customer experience.
+
+The system can operate as a desktop application and supports offline operation to ensure business continuity without relying on an internet connection.
+
+2. Problem Statement
+
+Traditional cashier systems may cause several problems, including:
+
+Slow customer service during peak hours.
+Long waiting queues and customer congestion.
+Difficulty managing products and invoices efficiently.
+Lack of real-time sales insights.
+Risk of system interruption affecting business operations.
+
+Fast Cashier aims to solve these problems by providing a fast, reliable, and easy-to-use cashier management system.
+
+3. Project Objectives
+
+The main objectives of Fast Cashier are:
+
+Reduce customer waiting time.
+Improve the speed of sales transactions.
+Provide a smooth user experience for employees.
+Simplify product and invoice management.
+Provide accurate sales reports and analytics.
+Reduce errors during the sales process.
+Support offline operation to avoid business interruption.
+4. System Users (Actors)
+
+The system has three main types of users:
+
+4.1 Manager (Administrator)
+Description:
+
+The manager has full control over the system and is responsible for managing store operations.
+
+Responsibilities:
+Product Management
+Add new products.
+Edit product information.
+Delete products.
+Manage product categories.
+Monitor product quantities.
+Invoice Management
+View invoices.
+Search invoices.
+Review sales history.
+Manage invoice records.
+Cashier Management
+Add cashiers.
+Assign permissions.
+Activate or deactivate cashier accounts.
+Device Management
+Manage connected devices:
+Receipt printers.
+Kitchen printers.
+Payment devices.
+Reports and Analytics
+View daily sales reports.
+View weekly sales reports.
+Analyze sales performance.
+Receive notifications for products with low stock.
+4.2 Cashier
+Description:
+
+The cashier is responsible for performing sales operations and interacting directly with customers.
+
+Responsibilities:
+Authentication
+Login using assigned credentials.
+Access only authorized features.
+Sales Process
+Search and select products.
+Add customer orders.
+Modify order quantities.
+Confirm orders.
+Customer Service Options
+
+The cashier can specify:
+
+Payment method:
+Cash payment.
+Electronic payment.
+Order type:
+Take away.
+Table service.
+Order Processing
+Send orders to kitchen.
+Print customer invoice.
+4.3 Kitchen Employee
+Description:
+
+The kitchen employee receives customer orders and prepares them.
+
+Responsibilities:
+Receive orders from the cashier.
+View printed kitchen tickets.
+Prepare requested products.
+
+No access to sales management features is provided.
+
+5. Functional Requirements
+5.1 User Authentication
+
+The system shall:
+
+Allow users to login.
+Verify user permissions.
+Restrict unauthorized access.
+5.2 Product Management
+
+The system shall allow the manager to:
+
+Create products.
+Update products.
+Delete products.
+Import products from Excel files.
+Export products to Excel files.
+5.3 Sales Management
+
+The system shall allow the cashier to:
+
+Create a new order.
+Add products.
+Calculate total price automatically.
+Select payment method.
+Complete the transaction.
+Generate invoice.
+5.4 Payment Management
+
+The system shall support:
+
+Cash payments.
+Electronic payments.
+5.5 Invoice Management
+
+The system shall:
+
+Store invoices.
+Search invoices.
+Display invoice details.
+Generate reports.
+5.6 Reporting System
+
+The system shall provide:
+
+Daily Reports:
+Number of transactions.
+Total sales.
+Most sold products.
+Weekly Reports:
+Sales performance.
+Product trends.
+Revenue analysis.
+5.7 Notification System
+
+The system shall:
+
+Monitor product quantities.
+Notify the manager when products are close to running out.
+5.8 Voice and Text Product Recognition
+
+The system shall support:
+
+Adding products using voice commands.
+Converting speech to text.
+Searching products using written or spoken input.
+5.9 Offline Operation
+
+The system shall:
+
+Work without internet connection.
+Store data locally.
+Synchronize data when connection becomes available (future enhancement).
+6. Non-Functional Requirements
+6.1 Performance
+
+The system should:
+
+Process sales transactions quickly.
+Provide fast response during checkout.
+Handle multiple operations efficiently.
+6.2 Usability
+
+The system should provide:
+
+Simple interface.
+Easy navigation.
+Minimal training requirements.
+6.3 Reliability
+
+The system should:
+
+Prevent unexpected shutdowns.
+Protect data from loss.
+Perform automatic backup.
+6.4 Security
+
+The system should:
+
+Protect user accounts.
+Control user permissions.
+Prevent unauthorized access.
+7. Business Rules
+Only the manager can manage products.
+Only the manager can create cashier accounts.
+Cashiers cannot modify system settings.
+Kitchen employees cannot access sales information.
+Every completed sale must have a payment method.
+Every cashier activity must be recorded.
+8. System Constraints
+The system should support desktop environments.
+The system must support local databases.
+The system should support receipt and kitchen printers.
+Hardware compatibility must be considered.
+9. Future Enhancements
+
+Possible future features:
+
+Cloud synchronization.
+Mobile application.
+Online dashboard.
+Artificial intelligence sales prediction.
+Customer loyalty system.
+Inventory forecasting.
+10. Next Design Phase
+
+After approving this document, the next steps are:
+
+Create Use Case Diagram.
+Create System Architecture Diagram.
+Design Database Schema.
+Design APIs (if required).
+Design User Interface.
+Start Implementation.

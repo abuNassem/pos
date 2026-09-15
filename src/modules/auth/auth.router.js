@@ -1,9 +1,14 @@
-import express from 'express';
-import registerUser from './auth.controllar.js';
+import express from "express";
+
+import { createInitialAdmin } from "./auth.controller.js";
+import { validateSetupAdmin } from "./auth.validate.js";
 
 const router = express.Router();
 
-router.post('/register', registerUser);
-// router.post('/login', loginUser);
+router.post(
+  "/setup-admin",
+  validateSetupAdmin,
+  createInitialAdmin
+);
 
 export default router;

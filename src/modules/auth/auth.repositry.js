@@ -1,4 +1,5 @@
-export const findAdmin = async (connection) => {
+export const findAdmin = async (connection,nationalId, birthDate) => {
+ 
   const [rows] = await connection.execute(
     `
       SELECT id
@@ -7,10 +8,34 @@ export const findAdmin = async (connection) => {
       LIMIT 1
     `
   );
-
+   if(!nationalId || !birthDate){
+    return null;
+  }
   return rows[0] ?? null;
 };
 
+export const check_user = async (connection,username) => {
+  const [rows] = await connection.execute(
+    `
+      SELECT id, username, role, password_hash
+      FROM users
+      WHERE username = ?
+      `,
+    [username]
+  );
+  return rows[0]?? null;
+};
+export const check_user_by_id = async (connection,userId) => {
+  const [rows] = await connection.execute(
+    `
+      SELECT id, username, role, password_hash
+      FROM users
+      WHERE id = ?
+      `,
+    [userId]
+  );
+  return rows[0]?? null;
+};
 
 export const findUserByUsername = async (
   connection,
@@ -51,7 +76,7 @@ export const findAdminByNationalId = async (
 export const createUser = async (
   connection,
   username,
-  passwordHash
+  passwordHash,is_Admin
 ) => {
   const [result] = await connection.execute(
     `
@@ -60,14 +85,14 @@ export const createUser = async (
         password_hash,
         role
       )
-      VALUES (?, ?, 'admin')
+      VALUES (?, ?, ?)
     `,
     [
       username,
       passwordHash,
+      is_Admin
     ]
   );
-
   return result.insertId;
 };
 
@@ -94,3 +119,24 @@ export const createAdminProfile = async (
     ]
   );
 };
+
+export const deleteUserById = async (connection, userId) => {
+  await connection.execute(
+    `
+      DELETE FROM users
+      WHERE id = ?
+    `,
+    [userId]
+  );
+}
+
+export const getUsers=async (connection) => {
+  const [rows] = await connection.execute(
+    `
+      SELECT id, username, role
+      FROM users
+    `
+  );
+  return rows;
+}
+

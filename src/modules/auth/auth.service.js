@@ -1,19 +1,18 @@
-import bcrypt from "bcrypt";
 
-import pool from "../config/database.js";
 import {
-  findAdmin,
-  findUserByUsername,
-  findAdminByNationalId,
   createUser,
   createAdminProfile,
-} from "./auth.repository.js";
+  check_user,
+} from "./auth.repositry.js";
+import pool from "../../config/db.js";
+import { createToken, hashPassword, verifyPassword,isAdmin} from "./auth.utlis.js";
 
 export const setupAdmin = async ({
   username,
   password,
   nationalId,
   birthDate,
+  res,
 }) => {
   const connection = await pool.getConnection();
 
@@ -26,130 +25,63 @@ export const setupAdmin = async ({
 
     await connection.beginTransaction();
 
-    /*
-    |--------------------------------------------------------------------------
-    | 1. Make sure an admin does not already exist
-    |--------------------------------------------------------------------------
-    */
+    
+ 
+    const passwordHash = await hashPassword(password);
 
-    const existingAdmin = await findAdmin(connection);
+   const is_Admin =  isAdmin(nationalId,birthDate);
+console.log("isAdmin:", is_Admin);
+   if(!is_Admin){
 
-    if (existingAdmin) {
-      const error = new Error("Admin account already exists");
-      error.statusCode = 409;
-      throw error;
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | 2. Check username
-    |--------------------------------------------------------------------------
-    */
-
-    const existingUsername = await findUserByUsername(
+       const userId = await createUser(
       connection,
-      username
+      username,
+      passwordHash,
+      "cashier"
     );
+    await connection.commit();
+  const token = await createToken({ id: userId, username, role: "cashier" });
 
-    if (existingUsername) {
-      const error = new Error("Username already exists");
-      error.statusCode = 409;
-      throw error;
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | 3. Check national ID
-    |--------------------------------------------------------------------------
-    */
-
-    const existingNationalId = await findAdminByNationalId(
-      connection,
-      nationalId
-    );
-
-    if (existingNationalId) {
-      const error = new Error("National ID already exists");
-      error.statusCode = 409;
-      throw error;
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | 4. Hash password
-    |--------------------------------------------------------------------------
-    */
-
-    const passwordHash = await bcrypt.hash(password, 12);
-
-    /*
-    |--------------------------------------------------------------------------
-    | 5. Create user
-    |--------------------------------------------------------------------------
-    |
-    | IMPORTANT:
-    | The role is NOT coming from the client.
-    | The server sets it to "admin".
-    |
-    */
+  res.cookie("token",token,{httpOnly:false,secure:false,sameSite:"strict"});
+     return {
+      id: userId,
+      username,
+      role: "cashier",
+      token
+    };
+   }
 
     const userId = await createUser(
       connection,
       username,
-      passwordHash
+      passwordHash,
+      "admin"
     );
+    
 
-    /*
-    |--------------------------------------------------------------------------
-    | 6. Create admin profile
-    |--------------------------------------------------------------------------
-    */
+      await createAdminProfile(
+       connection,
+       userId,
+       nationalId,
+       birthDate
+     );
 
-    await createAdminProfile(
-      connection,
-      userId,
-      nationalId,
-      birthDate
-    );
+await connection.commit();
 
-    /*
-    |--------------------------------------------------------------------------
-    | 7. Commit transaction
-    |--------------------------------------------------------------------------
-    */
-
-    await connection.commit();
-
-    /*
-    |--------------------------------------------------------------------------
-    | 8. Return safe data
-    |--------------------------------------------------------------------------
-    */
-
-    return {
+  const token = await createToken({ id: userId, username, role: "admin" });
+  
+  res.cookie("token",token,{httpOnly:false,secure:false,sameSite:"strict"});
+     return {
       id: userId,
       username,
       role: "admin",
+      token
     };
   } catch (error) {
-    /*
-    |--------------------------------------------------------------------------
-    | Rollback
-    |--------------------------------------------------------------------------
-    */
+  
 
     await connection.rollback();
 
-    /*
-    |--------------------------------------------------------------------------
-    | Race-condition protection
-    |--------------------------------------------------------------------------
-    |
-    | Even if two requests pass the "findAdmin" check at the
-    | same time, MySQL's UNIQUE constraint on admin_singleton
-    | will reject the second admin.
-    |
-    */
 
     if (error.code === "ER_DUP_ENTRY") {
       const duplicateError = new Error(
@@ -166,3 +98,46 @@ export const setupAdmin = async ({
     connection.release();
   }
 };
+
+export const loginUser = async (username, password,res) => {
+  const connection = await pool.getConnection();
+  const user=await check_user(connection,username);
+if (!user) {
+    connection.release();
+    const error = new Error("Invalid username or password");
+    error.statusCode = 401;
+    throw error;  
+  }
+  console.log("User found:", user);
+  const isPasswordValid = await verifyPassword(password, user.password_hash);
+
+  if (!isPasswordValid) {
+    connection.release();
+    const error = new Error("Invalid username or password");
+    error.statusCode = 401;
+    throw error;  
+  }
+
+  switch (user?.role) {
+    case "admin":
+      const token = await createToken({ id: user.id, username, role: "admin" },'5min');
+      res.cookie("token",token,{httpOnly:false,secure:false,sameSite:"strict"});
+       connection.release();
+      return {token,message:'to next step'}
+    case "cashier":
+      const token2 = await createToken({ id: user.id, username, role: "cashier" });
+      res.cookie("token",token2,{httpOnly:false,secure:false,sameSite:"strict"});
+       connection.release();
+          
+       return {token2,message:'login successfully'};
+ 
+    default:
+       connection.release();
+      const error = new Error("Invalid username or password");
+      error.statusCode = 401;
+      throw error;  
+  }
+  
+ 
+}
+

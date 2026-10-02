@@ -5,9 +5,9 @@ import {
   check_user,
 } from "./auth.repositry.js";
 import pool from "../../config/db.js";
-import { createToken, hashPassword, verifyPassword,isAdmin} from "./auth.utlis.js";
+import { createToken, hashPassword, verifyPassword,isAdmin} from "./auth.utils.js";
 
-export const setupAdmin = async ({
+export const setupUser= async ({
   username,
   password,
   nationalId,

@@ -1,5 +1,8 @@
 export const findAdmin = async (connection,nationalId, birthDate) => {
- 
+   if(!nationalId || !birthDate){
+    return null;
+  }
+  
   const [rows] = await connection.execute(
     `
       SELECT id
@@ -8,9 +11,7 @@ export const findAdmin = async (connection,nationalId, birthDate) => {
       LIMIT 1
     `
   );
-   if(!nationalId || !birthDate){
-    return null;
-  }
+ 
   return rows[0] ?? null;
 };
 
@@ -25,6 +26,8 @@ export const check_user = async (connection,username) => {
   );
   return rows[0]?? null;
 };
+
+
 export const check_user_by_id = async (connection,userId) => {
   const [rows] = await connection.execute(
     `
@@ -139,4 +142,5 @@ export const getUsers=async (connection) => {
   );
   return rows;
 }
+
 

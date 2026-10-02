@@ -1,4 +1,4 @@
-import pool from "../config/db";
+import pool from "../config/db.js";
 import jwt from "jsonwebtoken";
 import { check_user_by_id } from "../modules/auth/auth.repositry.js";
 

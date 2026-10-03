@@ -14,7 +14,17 @@ export const findAdmin = async (connection,nationalId, birthDate) => {
  
   return rows[0] ?? null;
 };
+export const createAdminSingleton = async (connection, userId) => {
+  const [result] = await connection.execute(
+    `
+      INSERT INTO admin_singleton (id, user_id)
+      VALUES (1, ?)
+    `,
+    [userId]
+  );
 
+  return result;
+};
 export const check_user = async (connection,username) => {
   const [rows] = await connection.execute(
     `

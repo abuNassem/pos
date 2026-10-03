@@ -9,17 +9,7 @@ CREATE TABLE users (
 
     role ENUM('admin', 'cashier') NOT NULL DEFAULT 'cashier',
 
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    -- admin_singleton TINYINT
-    --     GENERATED ALWAYS AS (
-    --         CASE
-    --             WHEN role = 'admin' THEN 1
-    --             ELSE NULL
-    --         END
-    --     ) STORED,
-
-    -- UNIQUE KEY uq_single_admin (admin_singleton)
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -31,6 +21,20 @@ CREATE TABLE admin_profiles (
     birth_date DATE NOT NULL,
 
     CONSTRAINT fk_admin_profile_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE admin_singleton (
+    id TINYINT UNSIGNED PRIMARY KEY,
+    user_id BIGINT UNSIGNED NOT NULL UNIQUE,
+
+    CONSTRAINT chk_single_admin
+        CHECK (id = 1),
+
+    CONSTRAINT fk_admin_singleton_user
         FOREIGN KEY (user_id)
         REFERENCES users(id)
         ON DELETE CASCADE

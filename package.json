@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "test": "jest --watchAll --runInBand"
+"test": "jest --setupFiles=./tests/auth/integration/env.js --watchAll --runInBand"
   },
   "keywords": [],
   "author": "",
